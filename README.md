@@ -48,13 +48,13 @@ TOTAL: 52.0
 If courses are missing, or your school uses a different catalog, rebuild it (log in with `main.py` first):
 
 ```
-python tools/parser.py
+python tools/parser_test.py
 ```
 
 ## If something goes wrong
 
 - **Login fails, or you typed something wrong:** delete `~/.wilma_config.json` and run `main.py` again.
-- **parser.py says the session expired:** run `main.py` to log in again.
+- **parser_test.py says the session expired:** run `main.py` to log in again.
 - **"Not in database: ...":** those courses weren't found in the catalog. Rebuild the database; if they're still missing, they may have no credits listed in Wilma.
 
 ## Note
