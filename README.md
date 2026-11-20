@@ -4,37 +4,31 @@ A small tool that counts how many credits (op / ECTS) your selected courses in W
 
 Wilma shows the courses you've picked, but not the total. This logs in as you, looks up each course's credits and adds them up.
 
-## How it works
-
-There are two scripts:
-
-- `parser.py` goes through the Wilma course catalog and saves every course code with its credits to `courses_db.json`. You only need to run it once, and again when the catalog changes.
-- `main.py` logs you in, reads your selected courses and prints the total.
-
 ## Setup
 
-You need Python 3.8 or newer. Install the two libraries it uses:
+You need Python 3.8 or newer.
 
 ```
-pip install requests beautifulsoup4
+git clone https://github.com/levvvent/wilma-ects-summary
+cd wilma-ects-summary
+pip install -r requirements.txt
 ```
 
 ## Usage
 
 ```
-python main.py     # first time: asks for your details and logs you in
-python parser.py   # builds courses_db.json
-python main.py     # prints your credits
+cd ECTS_parser
+python main.py
 ```
 
-The first time you run `main.py`, it asks for:
+The first time, it asks for:
 
 - your Wilma username
 - your Wilma ID, which is the `!123456` part of your Wilma address
 - your school's Wilma address, for example `https://helsinki.inschool.fi`
 - your password
 
-Your password is never saved. Your details and the login session are kept in `~/.wilma_config.json` and `~/.wilma_session.json`, so you don't have to log in every time.
+Your password is never saved. Your details and the login session are kept in `~/.wilma_config.json` and `~/.wilma_session.json`, so next time it just prints your credits.
 
 Example output:
 
@@ -47,11 +41,21 @@ Found 24 courses
 TOTAL: 52.0
 ```
 
+## The course database
+
+`ECTS_parser/tools/courses_db.json` already has the credits of about 570 courses from the Helsinki Wilma catalog, so you don't need to build it yourself.
+
+If courses are missing, or your school uses a different catalog, rebuild it (log in with `main.py` first):
+
+```
+python tools/parser.py
+```
+
 ## If something goes wrong
 
 - **Login fails, or you typed something wrong:** delete `~/.wilma_config.json` and run `main.py` again.
 - **parser.py says the session expired:** run `main.py` to log in again.
-- **"Not in database: ...":** those courses weren't found in the catalog. Run `parser.py` again; if they're still missing, they may have no credits listed in Wilma.
+- **"Not in database: ...":** those courses weren't found in the catalog. Rebuild the database; if they're still missing, they may have no credits listed in Wilma.
 
 ## Note
 
