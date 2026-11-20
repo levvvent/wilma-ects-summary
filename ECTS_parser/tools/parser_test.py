@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 HERE = os.path.dirname(os.path.abspath(__file__))
 DB = os.path.join(HERE, "courses_db.json")
 CODE_RE = re.compile(r"^[A-ZÄÖÅ]+\d+$")
-GROUP_RE = re.compile(r"/\d+/\d+$")  # teaching-group pages: follow their links, but they aren't courses
+GROUP_RE = re.compile(r"/\d+/\d+$")  # teaching-group pages: skipped, they aren't courses
 WORKERS = 10
 
 
@@ -74,7 +74,7 @@ with ThreadPoolExecutor(WORKERS) as ex:
         found = set()
         for url, (links, course) in zip(todo, ex.map(fetch, todo)):
             found |= links
-            if course and not GROUP_RE.search(url) and course[0] not in db:
+            if course and course[0] not in db:
                 db[course[0]] = course[1]
                 print(f"  + {course[0]}: {course[1]} ects")
         todo = sorted(found - seen)
@@ -88,4 +88,4 @@ with open(DB, "w", encoding="utf-8") as f:
 print(f"\nDone! {len(db)} courses from {len(seen)} pages saved to {DB}")
 for p in ("ÄI", "S2", "MAA", "ENA"):
     found = sorted(c for c in db if c.startswith(p))
-    print(f"  {p}: {len(found)} courses (e.g. {found[:3]})") 
+    print(f"  {p}: {len(found)} courses (e.g. {found[:3]})")
