@@ -23,10 +23,10 @@ def save(path, data):
  
 def get_trays():
     """Return the trays page HTML, or None if we're not logged in."""
-    r = s.get(f"{base}/{cfg['wilma_id']}/trays", timeout=10)
-    logged_out = (r.url.endswith("/login") or "login-page" in r.text
+    r = s.get(f"{base}/{cfg['wilma_id']}/trays", timeout=10, allow_redirects=False)
+    logged_out = (r.status_code != 200 or "login-page" in r.text
                   or "Istunnon tunniste ei kelpaa" in r.text)
-    return r.text if r.ok and not logged_out else None
+    return None if logged_out else r.text
  
  
 cfg = load(CONFIG)
