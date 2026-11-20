@@ -57,8 +57,8 @@ code_re = re.compile(r"^([A-ZÄÖÅ]+\d+)\.")  # "MAA05.2 ..." -> "MAA05"
 codes = {m[1] for row in table.find_all("tr")[1:] for td in row.find_all("td")
          if (m := code_re.match(td.get_text(" ", strip=True)))}
  
-with open(os.path.join(HERE, "tools/courses_db.json"), encoding="utf-8") as f:
-    credits = json.load(f)
+if not (credits := load(os.path.join(HERE, "tools", "courses_db.json"))):
+    sys.exit("tools/courses_db.json is missing or broken, run tools/parser.py to rebuild it")
  
 print(f"Found {len(codes)} courses")
 for c in sorted(codes & credits.keys()):
@@ -66,4 +66,3 @@ for c in sorted(codes & credits.keys()):
 print(f"\nTOTAL: {sum(credits[c] for c in codes & credits.keys())}")
 if missing := sorted(codes - credits.keys()):
     print("Not in database:", missing)
- 
